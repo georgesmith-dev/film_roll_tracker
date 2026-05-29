@@ -7,15 +7,19 @@ from typing import Optional
 
 app = FastAPI()
 
+valid_rolls = (
+    []
+)  # I need a way to add unique IDs to these entries so get_roll will work
+
 
 @app.get("/")
 def root():
-    "Ensures the server is up"
+    "ensures the server is up"
     return {"message": "server is running"}
 
 
 class Roll(BaseModel):
-    "Defines the data shape of the film roll"
+    "defines the data shape of the film roll"
 
     stock: str = Field(min_length=3, max_length=30)
     exposures: int = Field(gt=0, lt=100)
@@ -26,14 +30,39 @@ class Roll(BaseModel):
 
 @app.post("/rolls")
 def post_new_roll(new_roll: Roll):
-    "Posts a new roll"
-    valid_stock = {} # I should come up with a better way to validate a new roll
-    if new_roll.stock not in valid_stock:
-        raise HTTPException(status_code=409, detail="Invalid roll stock")
-    return ("New roll added!"), {
+    "posts a new roll"
+    valid_iso = {
+        200,
+        400,
+        800,
+    }  # I think there should still be a better way to validate this
+    if new_roll.iso not in valid_iso:
+        raise HTTPException(status_code=409, detail="Invalid roll data")
+
+    valid_roll = {
         "Stock": new_roll.stock,
         "Exposures": new_roll.exposures,
         "iso": new_roll.iso,
         "developed": new_roll.developed,
         "camera used": new_roll.camera_used,
-    } # I need to test this in a test.py
+    }
+    valid_rolls.append(valid_roll)
+    return "New roll added!"
+
+
+@app.get("/rolls/all")
+def get_all_rolls():
+    "returns all validates rolls"
+    return valid_rolls
+
+
+@app.get("/rolls/{roll_id}")
+def get_roll(roll_id: int = Path(gt=0, description="Id must be greater than 0")):
+    "returns a roll depending on user input"
+    pass
+
+
+@app.develop("/rolls/{roll_id}/develop")
+def patch_roll(roll_id: int = Path(gt=0, description="Id must be greater than 0")):
+    "enables user to update developed status"
+    pass
