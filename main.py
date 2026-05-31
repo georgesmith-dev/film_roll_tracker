@@ -7,9 +7,7 @@ from typing import Optional
 
 app = FastAPI()
 
-valid_rolls = (
-    []
-)  # I need a way to add unique IDs to these entries so get_roll will work
+valid_rolls = []
 
 
 @app.get("/")
@@ -46,23 +44,31 @@ def post_new_roll(new_roll: Roll):
         "developed": new_roll.developed,
         "camera used": new_roll.camera_used,
     }
+    valid_roll["id"] = len(valid_rolls) + 1
     valid_rolls.append(valid_roll)
     return "New roll added!"
 
 
 @app.get("/rolls/all")
 def get_all_rolls():
-    "returns all validates rolls"
+    "returns all validated rolls"
     return valid_rolls
 
 
 @app.get("/rolls/{roll_id}")
 def get_roll(roll_id: int = Path(gt=0, description="Id must be greater than 0")):
     "returns a roll depending on user input"
-    pass
+    for valid_roll in valid_rolls:
+        if valid_roll.get("id") == roll_id:
+            return valid_roll
+        raise HTTPException(status_code=404, detail=f"Roll {roll_id} was not found")
 
 
 @app.patch("/rolls/{roll_id}/develop")
 def patch_roll(roll_id: int = Path(gt=0, description="Id must be greater than 0")):
     "enables user to update developed status"
-    pass
+    roll = get_roll(roll_id)
+    if roll.get("developed") == True:
+        return {"message": f"Roll {roll_id} has already been developed"}
+    roll["developed"] = True
+    return {"message": f"Roll {roll_id} has been developed", "roll": roll}
