@@ -62,7 +62,7 @@ def get_roll(roll_id: int = Path(gt=0, description="Id must be greater than 0"))
     pass
 
 
-@app.develop("/rolls/{roll_id}/develop")
+@app.patch("/rolls/{roll_id}/develop")
 def patch_roll(roll_id: int = Path(gt=0, description="Id must be greater than 0")):
     "enables user to update developed status"
     pass
