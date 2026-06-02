@@ -74,11 +74,11 @@ def develop_film(base_url, roll_id: int):
 
 
 if __name__ == "__main__":
-    check_status("http://127.0.0.1:8000/")
-    valid_post_new_roll("http://127.0.0.1:8000/")
-    invalid_post_new_roll("http://127.0.0.1:8000/")
-    get_all_rolls("http://127.0.0.1:8000/")
-    get_roll("http://127.0.0.1:8000/", roll_id=1)
-    get_roll("http://127.0.0.1:8000/", roll_id=99)  # Invalid roll
-    develop_film("http://127.0.0.1:8000/", roll_id=1)
-    develop_film("http://127.0.0.1:8000/", roll_id=99)  # Invalid roll
+    check_status("http://127.0.0.1:8000")
+    valid_post_new_roll("http://127.0.0.1:8000")
+    invalid_post_new_roll("http://127.0.0.1:8000")
+    get_all_rolls("http://127.0.0.1:8000")
+    get_roll("http://127.0.0.1:8000", roll_id=1)
+    get_roll("http://127.0.0.1:8000", roll_id=99)  # Invalid roll
+    develop_film("http://127.0.0.1:8000", roll_id=1)
+    develop_film("http://127.0.0.1:8000", roll_id=99)  # Invalid roll
