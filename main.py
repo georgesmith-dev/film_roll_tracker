@@ -2,7 +2,7 @@ from fastapi import FastAPI, Path, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from pydantic import Field
-from typing import Optional
+from typing import Optional, Literal
 
 app = FastAPI()
 
@@ -20,7 +20,7 @@ class Roll(BaseModel):
 
     stock: str = Field(min_length=3, max_length=30)
     exposures: int = Field(gt=0, lt=100)
-    iso: int = Field(gt=50, lt=2000)
+    iso: Literal[200, 400, 800]
     developed: bool = False
     camera_used: Optional[str] = Field(default=None, min_length=1, max_length=30)
 
@@ -28,20 +28,13 @@ class Roll(BaseModel):
 @app.post("/rolls")
 def post_new_roll(new_roll: Roll):
     "posts a new roll"
-    valid_iso = {
-        200,
-        400,
-        800,
-    }  # I think there should still be a better way to validate this
-    if new_roll.iso not in valid_iso:
-        raise HTTPException(status_code=409, detail="Invalid roll data")
 
     valid_roll = {
         "stock": new_roll.stock,
         "exposures": new_roll.exposures,
         "iso": new_roll.iso,
         "developed": new_roll.developed,
-        "camera used": new_roll.camera_used,
+        "camera_used": new_roll.camera_used,
     }
     valid_roll["id"] = len(valid_rolls) + 1
     valid_rolls.append(valid_roll)
